@@ -17,3 +17,5 @@ and then run it within this folder.
 ```python
 python is_active.py
 ```
+
+This produces a CSV file [like this](https://gist.github.com/MartinThoma/d8dbccb795016bc5c1090b8f48c1ed0d).

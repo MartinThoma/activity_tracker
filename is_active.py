@@ -25,11 +25,11 @@ def ping(home_assistant: str, token: str) -> None:
 def store_locally(path: Path) -> int:
     if not path.exists():
         with open(path, "w") as fp:
-            fp.write("date;last_activity\n")
+            fp.write("date,last_activity\n")
     now = datetime.datetime.now()
     last_activity = xprintidle.idle_time()
     with open(path, "a") as fp:
-        fp.write(f"{now:%Y-%m-%d %H:%M:%S};{last_activity}\n")
+        fp.write(f"{now:%Y-%m-%d %H:%M:%S},{last_activity}\n")
     return last_activity
 
 
@@ -38,12 +38,16 @@ if __name__ == "__main__":
         import uuid
         token = str(uuid.uuid4())
     else:
-        token = sys.argv[1]  # random UUIDv4
+        token = sys.argv[1]
+
     threshold_in_s = 30
     home_assistant = "http://192.168.178.76:8123"  # no trailing slash please!
     
     print(f"Token: {token}")
-    path = Path.home() / Path("activity_log.csv")
+    today = datetime.datetime.now()
+    path = Path.home() / Path(f"activity_log/{today:%Y-%m-%d}.csv")
+    print(f"Store activity log at: {path}")
+
     while True:
         if was_active(threshold_in_s):
             # ping(home_assistant, token)
