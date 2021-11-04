@@ -22,28 +22,31 @@ def ping(home_assistant: str, token: str) -> None:
         print(f"Retrieved {resp.status_code} when pinging {url}")
 
 
-def store_locally(path: Path) -> None:
+def store_locally(path: Path) -> int:
     if not path.exists():
         with open(path, "w") as fp:
             fp.write("date;last_activity\n")
     now = datetime.datetime.now()
-    last = xprintidle.idle_time()
+    last_activity = xprintidle.idle_time()
     with open(path, "a") as fp:
-        fp.write(f"{now:%Y-%m-%d %H:%M:%S};{last}\n")
+        fp.write(f"{now:%Y-%m-%d %H:%M:%S};{last_activity}\n")
+    return last_activity
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("ERROR: Missing argument. Call as ./ping_activity.py token")
-        sys.exit(1)
+        import uuid
+        token = str(uuid.uuid4())
+    else:
+        token = sys.argv[1]  # random UUIDv4
     threshold_in_s = 30
     home_assistant = "http://192.168.178.76:8123"  # no trailing slash please!
-    token = sys.argv[1]  # random UUIDv4
+    
     print(f"Token: {token}")
     path = Path.home() / Path("activity_log.csv")
     while True:
         if was_active(threshold_in_s):
             # ping(home_assistant, token)
-            store_locally(path)
-            print("pinged!")
+            last_activity = store_locally(path)
+            print(f"last_activity: {last_activity}")
         time.sleep(threshold_in_s)
