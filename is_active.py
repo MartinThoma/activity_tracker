@@ -4,10 +4,41 @@ import os
 import time
 import sys
 from pathlib import Path
+from typing import Optional
 import datetime
 
 import requests
 import xprintidle  # pip install xprintidle
+
+
+def main(
+    storage_path: Optional[Path] = None,
+    token: Optional[str] = None,
+    home_assistant_url: Optional[str] = None,
+    threshold_in_s: int = 30,
+):
+    if storage_path is None:
+        today = datetime.datetime.now()
+        storage_path = Path.home() / Path(f"activity_log/{today:%Y-%m-%d}.csv")
+    if token is None:
+        import uuid
+
+        token = str(uuid.uuid4())
+    if home_assistant_url is not None:
+        if home_assistant_url.endswith("/"):
+            home_assistant_url = home_assistant_url[:-1]
+            # e.g. "http://192.168.178.76:8123"
+
+    print(f"Token: {token}")
+    print(f"Store activity log at: {storage_path}")
+
+    while True:
+        if was_active(threshold_in_s):
+            if home_assistant_url:
+                ping(home_assistant_url, token)
+            last_activity = store_locally(storage_path)
+            print(f"last_activity: {last_activity}")
+        time.sleep(threshold_in_s)
 
 
 def was_active(threshold_in_s: int) -> bool:
@@ -34,23 +65,4 @@ def store_locally(path: Path) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        import uuid
-        token = str(uuid.uuid4())
-    else:
-        token = sys.argv[1]
-
-    threshold_in_s = 30
-    home_assistant = "http://192.168.178.76:8123"  # no trailing slash please!
-    
-    print(f"Token: {token}")
-    today = datetime.datetime.now()
-    path = Path.home() / Path(f"activity_log/{today:%Y-%m-%d}.csv")
-    print(f"Store activity log at: {path}")
-
-    while True:
-        if was_active(threshold_in_s):
-            # ping(home_assistant, token)
-            last_activity = store_locally(path)
-            print(f"last_activity: {last_activity}")
-        time.sleep(threshold_in_s)
+    main()

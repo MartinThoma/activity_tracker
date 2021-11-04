@@ -1,2 +1,4 @@
 requests
 xprintidle
+click
+pillow
