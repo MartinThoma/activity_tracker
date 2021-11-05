@@ -1,12 +1,17 @@
+# Core Library modules
 from datetime import datetime
-import click
-from create_image import main as visualize_main
-from is_active import main as log_activity_main
 from pathlib import Path
+
+# Third party modules
+import click
+
+# First party modules
+from activity_tracker.create_image import main as visualize_main
+from activity_tracker.is_active import main as log_activity_main
 
 
 @click.group()
-def entry_point():
+def entry_point() -> None:
     pass
 
 
@@ -16,7 +21,7 @@ def entry_point():
     default=Path.home() / Path(f"activity_log/{datetime.now():%Y-%m-%d}.csv"),
     type=click.Path(exists=False, dir_okay=False),
 )
-def log_activity(path: str):
+def log_activity(path: str) -> None:
     log_activity_main(Path(path))
 
 
@@ -27,8 +32,8 @@ def log_activity(path: str):
 @click.option(
     "--output", "-o", type=click.Path(exists=False, dir_okay=False), required=True
 )
-def visualize(input, output):
-    visualize_main(input, output)
+def visualize(input: str, output: str) -> None:
+    visualize_main(Path(input), Path(output))
 
 
 if __name__ == "__main__":

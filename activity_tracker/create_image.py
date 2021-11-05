@@ -1,11 +1,14 @@
-from PIL import Image
-from typing import List
-from pathlib import Path
-import datetime
+# Core Library modules
 import csv
+import datetime
+from pathlib import Path
+from typing import List
+
+# Third party modules
+from PIL import Image
 
 
-def main(activity_csv: Path, image_filepath: Path):
+def main(activity_csv: Path, image_filepath: Path) -> None:
     times = []
     with open(activity_csv, "rt", newline="") as csvfile:
         csvreader = csv.reader(csvfile, delimiter=",", quotechar='"')
@@ -15,7 +18,9 @@ def main(activity_csv: Path, image_filepath: Path):
     visualize_activity(times, image_filepath)
 
 
-def visualize_activity(activity_timestamps: List[datetime.datetime], filepath: Path):
+def visualize_activity(
+    activity_timestamps: List[datetime.datetime], filepath: Path
+) -> None:
     time_range = max(activity_timestamps) - min(activity_timestamps)
     width = int(time_range / datetime.timedelta(minutes=1)) + 1
     height = 50

@@ -1,12 +1,14 @@
 """Activity monitor"""
 
+# Core Library modules
+import datetime
 import os
-import time
 import sys
+import time
 from pathlib import Path
 from typing import Optional
-import datetime
 
+# Third party modules
 import requests
 import xprintidle  # pip install xprintidle
 
@@ -16,11 +18,12 @@ def main(
     token: Optional[str] = None,
     home_assistant_url: Optional[str] = None,
     threshold_in_s: int = 30,
-):
+) -> None:
     if storage_path is None:
         today = datetime.datetime.now()
         storage_path = Path.home() / Path(f"activity_log/{today:%Y-%m-%d}.csv")
     if token is None:
+        # Core Library modules
         import uuid
 
         token = str(uuid.uuid4())
