@@ -1,10 +1,13 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![GitHub last commit](https://img.shields.io/github/last-commit/MartinThoma/activity_tracker)
+
 # activity_tracker
 
 Log when you were using your computer.
 
-## Install
+## Installation
 
-Currently this is not a package. You need to install the prerequesites:
+This package is currently not on PyPI. You need to install it manually:
 
 ```bash
 $ git clone git@github.com:MartinThoma/activity_tracker.git ~/activity_tracker
@@ -37,9 +40,7 @@ last_activity: 150
 ...
 ```
 
-This produces a CSV file [like this](https://gist.github.com/MartinThoma/d8dbccb795016bc5c1090b8f48c1ed0d).
-
-You can visualize it via:
+This produces a CSV file [like this](https://gist.github.com/MartinThoma/d8dbccb795016bc5c1090b8f48c1ed0d). That CSV can be visualized via:
 
 ```bash
 $ activity_tracker visualize --help
