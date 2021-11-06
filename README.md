@@ -51,3 +51,25 @@ Options:
   -o, --output FILE  [required]
   --help             Show this message and exit.
 ```
+
+## Start Tracking on Startup
+
+This depends very much on your operating system.
+
+### Ubuntu
+
+You need to edit your crontab file:
+
+```
+sudo crontab -e -u your_user_name
+```
+
+At the bottom of the file, add this line:
+
+```
+@reboot python3 -m activity_tracker log-activity &
+```
+
+Please note that you need to install the Package as `python3 -m pip install -e .`
+for this to work. You can have multiple different Python environments on your
+system.
