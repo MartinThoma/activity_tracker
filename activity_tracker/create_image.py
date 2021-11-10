@@ -8,17 +8,16 @@ from typing import List
 from PIL import Image
 
 
-def main(activity_csv: Path, image_filepath: Path) -> None:
+def read_activity_file(activity_csv: Path) -> List[datetime.datetime]:
     times = []
     with open(activity_csv, "rt", newline="") as csvfile:
         csvreader = csv.reader(csvfile, delimiter=",", quotechar='"')
         next(csvreader, None)  # skip the headers
         times = [datetime.datetime.fromisoformat(row[0]) for row in csvreader]
+    return times
 
-    visualize_activity(times, image_filepath)
 
-
-def visualize_activity(
+def visualize_activity_matplotlib(
     activity_timestamps: List[datetime.datetime], filepath: Path
 ) -> None:
     time_range = max(activity_timestamps) - min(activity_timestamps)
@@ -38,3 +37,39 @@ def visualize_activity(
 
 def to_x(min_time: datetime.datetime, current_time: datetime.datetime) -> int:
     return int((current_time - min_time) / datetime.timedelta(minutes=1))
+
+
+def visualize_activity_plotly(
+    activity_timestamps: List[datetime.datetime], filepath: Path
+) -> None:
+    """
+    Visualize activity using Plotly.
+
+    This code was written by AzuxirenLeadGuy:
+    https://stackoverflow.com/a/69836149/562769
+    """
+    # Third party modules
+    import plotly.graph_objects as go
+
+    fig = go.Figure()
+
+    datelist = activity_timestamps
+
+    # Normalize all timestamps by subtracting the first.
+    timestamplist = [x for x in datelist]
+    length = len(datelist)
+
+    fig.add_trace(
+        go.Scatter(x=timestamplist, y=[0] * length, mode="markers", marker_size=20)
+    )
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(
+        showgrid=False,
+        zeroline=True,
+        zerolinecolor="black",
+        zerolinewidth=3,
+        showticklabels=False,
+    )
+    fig.update_layout(height=200, plot_bgcolor="white", title="My Timeline Title")
+    fig.write_image(filepath)
+    fig.show()

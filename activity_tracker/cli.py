@@ -6,7 +6,11 @@ from pathlib import Path
 import click
 
 # First party modules
-from activity_tracker.create_image import main as visualize_main
+from activity_tracker.create_image import (
+    read_activity_file,
+    visualize_activity_matplotlib,
+    visualize_activity_plotly,
+)
 from activity_tracker.is_active import main as log_activity_main
 
 
@@ -32,8 +36,17 @@ def log_activity(path: str) -> None:
 @click.option(
     "--output", "-o", type=click.Path(exists=False, dir_okay=False), required=True
 )
-def visualize(input: str, output: str) -> None:
-    visualize_main(Path(input), Path(output))
+@click.option(
+    "--renderer", type=click.Choice(["plotly", "matplotlib"]), default="plotly"
+)
+def visualize(input: str, output: str, renderer: str) -> None:
+    activity = read_activity_file(Path(input))
+    if renderer == "plotly":
+        visualize_activity_plotly(activity, Path(output))
+    elif renderer == "matplotlib":
+        visualize_activity_matplotlib(activity, Path(output))
+    else:
+        print("Invalid choice")
 
 
 if __name__ == "__main__":
