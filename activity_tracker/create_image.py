@@ -71,5 +71,5 @@ def visualize_activity_plotly(
         showticklabels=False,
     )
     fig.update_layout(height=200, plot_bgcolor="white", title="My Timeline Title")
-    fig.write_image(filepath)
+    fig.write_image(str(filepath))
     fig.show()
