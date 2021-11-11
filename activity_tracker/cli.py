@@ -12,6 +12,7 @@ from activity_tracker.create_image import (
     visualize_activity_plotly,
 )
 from activity_tracker.is_active import main as log_activity_main
+from activity_tracker.stats import analyze as analyze_activity
 
 
 @click.group()
@@ -47,6 +48,15 @@ def visualize(input: str, output: str, renderer: str) -> None:
         visualize_activity_matplotlib(activity, Path(output))
     else:
         print("Invalid choice")
+
+
+@entry_point.command()
+@click.option(
+    "--input", "-i", type=click.Path(exists=True, dir_okay=False), required=True
+)
+def analyze(input: str) -> None:
+    activity = read_activity_file(Path(input))
+    analyze_activity(activity)
 
 
 if __name__ == "__main__":

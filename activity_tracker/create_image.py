@@ -30,8 +30,6 @@ def visualize_activity_matplotlib(
         x = to_x(min(activity_timestamps), timestamp)
         for y in range(height):
             pix[x, y] = (0, 0, 0)
-    print(f"min: {min(activity_timestamps)}")
-    print(f"max: {max(activity_timestamps)}")
     img.save(filepath)
 
 
@@ -70,6 +68,8 @@ def visualize_activity_plotly(
         zerolinewidth=3,
         showticklabels=False,
     )
-    fig.update_layout(height=200, plot_bgcolor="white", title="My Timeline Title")
+    fig.update_layout(
+        height=200, plot_bgcolor="white", title=f"Activity on {min(datelist):%d.%m.%Y}"
+    )
     fig.write_image(str(filepath))
     fig.show()
