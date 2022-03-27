@@ -10,10 +10,10 @@ import pytest
 import activity_tracker
 
 
-def test_version():
+def test_version() -> None:
     assert activity_tracker.__version__.count(".") == 2
 
 
-def test_zero_division():
+def test_zero_division() -> None:
     with pytest.raises(ZeroDivisionError):
         1 / 0

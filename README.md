@@ -56,6 +56,14 @@ Options:
 
 This depends very much on your operating system.
 
-I've tried adding it to my crontab file (also with the `-u` option). It gets
-executed automatically, but it thinks I'm always active with that option.
-I still need to figure out why.
+On Ubuntu, you can install `screen`:
+
+```bash
+sudo apt-get install screen
+```
+
+and add this line to your `~/.profile` or `~/.bashrc`:
+
+```
+python -m activity_tracker autostart
+```

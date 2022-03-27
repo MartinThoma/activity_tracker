@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 
 # First party modules
+from activity_tracker.autostart import conditional_start_screen_session
 from activity_tracker.create_image import (
     read_activity_file,
     visualize_activity_matplotlib,
@@ -18,6 +19,13 @@ from activity_tracker.stats import analyze as analyze_activity
 @click.group()
 def entry_point() -> None:
     pass
+
+
+@entry_point.command()
+def autostart() -> None:
+    conditional_start_screen_session(
+        "activity_tracker", "activity_tracker log-activity"
+    )
 
 
 @entry_point.command()

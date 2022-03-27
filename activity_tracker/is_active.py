@@ -2,8 +2,6 @@
 
 # Core Library modules
 import datetime
-import os
-import sys
 import time
 from pathlib import Path
 from typing import Optional
@@ -27,10 +25,9 @@ def main(
         import uuid
 
         token = str(uuid.uuid4())
-    if home_assistant_url is not None:
-        if home_assistant_url.endswith("/"):
-            home_assistant_url = home_assistant_url[:-1]
-            # e.g. "http://192.168.178.76:8123"
+    if home_assistant_url is not None and home_assistant_url.endswith("/"):
+        home_assistant_url = home_assistant_url[:-1]
+        # e.g. "http://192.168.178.76:8123"
 
     print(f"Token: {token}")
     print(f"Store activity log at: {storage_path}")
@@ -45,7 +42,7 @@ def main(
 
 
 def was_active(threshold_in_s: int) -> bool:
-    last_activity_in_s = xprintidle.idle_time() / 1000
+    last_activity_in_s = float(xprintidle.idle_time() / 1000)
     return last_activity_in_s < threshold_in_s
 
 
@@ -61,7 +58,7 @@ def store_locally(path: Path) -> int:
         with open(path, "w") as fp:
             fp.write("date,last_activity\n")
     now = datetime.datetime.now()
-    last_activity = xprintidle.idle_time()
+    last_activity = int(xprintidle.idle_time())
     with open(path, "a") as fp:
         fp.write(f"{now:%Y-%m-%d %H:%M:%S},{last_activity}\n")
     return last_activity
