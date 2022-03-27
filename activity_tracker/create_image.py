@@ -54,7 +54,7 @@ def visualize_activity_plotly(
     datelist = activity_timestamps
 
     # Normalize all timestamps by subtracting the first.
-    timestamplist = [x for x in datelist]
+    timestamplist = list(datelist)
     length = len(datelist)
 
     fig.add_trace(
