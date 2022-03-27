@@ -8,7 +8,7 @@ import click
 # First party modules
 from activity_tracker.autostart import conditional_start_screen_session
 from activity_tracker.create_image import (
-    read_activity_file,
+    read_activity_path,
     visualize_activity_matplotlib,
     visualize_activity_plotly,
 )
@@ -40,7 +40,7 @@ def log_activity(path: str) -> None:
 
 @entry_point.command()
 @click.option(
-    "--input", "-i", type=click.Path(exists=True, dir_okay=False), required=True
+    "--input", "-i", type=click.Path(exists=True, dir_okay=True), required=True
 )
 @click.option(
     "--output", "-o", type=click.Path(exists=False, dir_okay=False), required=True
@@ -49,7 +49,7 @@ def log_activity(path: str) -> None:
     "--renderer", type=click.Choice(["plotly", "matplotlib"]), default="plotly"
 )
 def visualize(input: str, output: str, renderer: str) -> None:
-    activity = read_activity_file(Path(input))
+    activity = read_activity_path(Path(input))
     if renderer == "plotly":
         visualize_activity_plotly(activity, Path(output))
     elif renderer == "matplotlib":
@@ -60,10 +60,10 @@ def visualize(input: str, output: str, renderer: str) -> None:
 
 @entry_point.command()
 @click.option(
-    "--input", "-i", type=click.Path(exists=True, dir_okay=False), required=True
+    "--input", "-i", type=click.Path(exists=True, dir_okay=True), required=True
 )
 def analyze(input: str) -> None:
-    activity = read_activity_file(Path(input))
+    activity = read_activity_path(Path(input))
     analyze_activity(activity)
 
 

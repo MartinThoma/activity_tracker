@@ -2,34 +2,60 @@
 import csv
 import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 # Third party modules
 from PIL import Image
 
 
-def read_activity_file(activity_csv: Path) -> List[datetime.datetime]:
+def read_activity_path(activty_path: Path) -> List[datetime.datetime]:
+    if activty_path.is_dir:
+        activity = []
+        for filepath in activty_path.glob("**/*.csv"):
+            activity += read_activity_file(filepath)
+    else:
+        activity = read_activity_file(activty_path)
+    return sorted(activity)
+
+
+def read_activity_file(
+    activity_csv: Path, threshold: int = 90
+) -> List[datetime.datetime]:
     times = []
     with open(activity_csv, "rt", newline="") as csvfile:
         csvreader = csv.reader(csvfile, delimiter=",", quotechar='"')
         next(csvreader, None)  # skip the headers
-        times = [datetime.datetime.fromisoformat(row[0]) for row in csvreader]
+        try:
+            times = [
+                datetime.datetime.fromisoformat(row[0])
+                for row in csvreader
+                if int(row[1]) < threshold
+            ]
+        except ValueError as exp:
+            print(f"Error parsing {activity_csv}: {exp}")
     return times
 
 
 def visualize_activity_matplotlib(
-    activity_timestamps: List[datetime.datetime], filepath: Path
+    activity_timestamps: List[datetime.datetime],
+    filepath: Path,
+    start: Optional[datetime.datetime] = None,
+    end: Optional[datetime.datetime] = None,
 ) -> None:
-    time_range = max(activity_timestamps) - min(activity_timestamps)
+    if not start:
+        start = min(activity_timestamps)
+    if not end:
+        end = max(activity_timestamps)
+    time_range = end - start
     width = int(time_range / datetime.timedelta(minutes=1)) + 1
     height = 50
     img = Image.new(mode="RGB", size=(width, height), color=(255, 255, 255))
-    pix = img.load()
+    pixels = img.load()
 
     for timestamp in activity_timestamps:
         x = to_x(min(activity_timestamps), timestamp)
         for y in range(height):
-            pix[x, y] = (0, 0, 0)
+            pixels[x, y] = (0, 0, 0)
     img.save(filepath)
 
 
