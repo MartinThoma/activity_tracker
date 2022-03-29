@@ -1,6 +1,10 @@
 # Core Library modules
 import datetime
+from types import ModuleType
 from typing import Dict, List, Tuple
+
+# Third party modules
+import plotext as plt
 
 
 def analyze(timestamps: List[datetime.datetime]) -> None:
@@ -22,6 +26,46 @@ def analyze(timestamps: List[datetime.datetime]) -> None:
             print(f"\n\n## {current_month}")
         print(f"\n### {date_str}")
         analyze_contiguous(values)
+        plot_activity(values)
+
+
+def plot_activity(times: List[datetime.datetime], plt: ModuleType = plt) -> None:
+    """
+    Plot a daily activity graph.
+
+    Credits to Savino Piccolomo for this:
+    https://github.com/piccolomo/plotext/issues/83#issuecomment-1081700156
+    """
+    # plt.clf()
+    # plt.clt()
+    # to optionally clean the terminal
+    plt.datetime.set_datetime_form(  # type: ignore
+        date_form="", time_form="%H:%M"
+    )  # Try also time_form="%H" for clearer x ticks !
+
+    times_orig = times
+    times = [plt.datetime.datetime_to_timestamp(el) for el in times]  # type: ignore
+
+    plt.scatter(times, [1] * len(times), fillx=1, marker="hd", color="red")  # type: ignore
+    d = times_orig[0]
+    base = datetime.datetime(d.year, d.month, d.day)
+    xticks = [base + datetime.timedelta(hours=i) for i in range(25)]
+    xlabels = [plt.datetime.datetime_to_string(tick) for tick in xticks]  # type: ignore
+    xticks = [plt.datetime.datetime_to_timestamp(tick) for tick in xticks]  # type: ignore
+    plt.xticks(xticks, xlabels)  # type: ignore
+    plt.yticks()  # type: ignore
+    plt.xlim(xticks[0], xticks[-1])  # type: ignore
+    plt.ylim(0, 1)  # type: ignore
+    plt.frame(0)  # type: ignore
+    plt.xaxis(1, "lower")  # type: ignore
+    plt.xaxis(1, "upper")  # type: ignore
+    plt.xlabel("Hours in The Day")  # type: ignore
+    plt.title("Activity Tracker")  # type: ignore
+
+    # Set the height you prefer or comment for maximum size
+    plt.plotsize(None, 20)  # type: ignore
+
+    plt.show()  # type: ignore
 
 
 def group_by_day(

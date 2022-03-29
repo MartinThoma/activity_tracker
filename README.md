@@ -3,7 +3,9 @@
 
 # activity_tracker
 
-Log when you were using your computer.
+Log, analyze, and visualize when you were using your computer.
+
+![Show daily activity directly in the console](docs/activity-graph.png)
 
 ## Installation
 
@@ -56,7 +58,7 @@ Options:
 
 This depends very much on your operating system.
 
-On Ubuntu, you can install `screen`:
+On Ubuntu, you can install [`screen`](https://www.gnu.org/software/screen/manual/screen.html):
 
 ```bash
 sudo apt-get install screen
