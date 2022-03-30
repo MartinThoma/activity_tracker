@@ -20,6 +20,7 @@ def main(
     if storage_path is None:
         today = datetime.datetime.now()
         storage_path = Path.home() / Path(f"activity_log/{today:%Y-%m-%d}.csv")
+    storage_path = storage_path.expanduser()
     if token is None:
         # Core Library modules
         import uuid
@@ -53,8 +54,14 @@ def ping(home_assistant: str, token: str) -> None:
         print(f"Retrieved {resp.status_code} when pinging {url}")
 
 
+def create_folder_structure(storage_path: Path) -> None:
+    if not storage_path.exists():
+        storage_path.mkdir(parents=True)
+
+
 def store_locally(path: Path) -> int:
     if not path.exists():
+        create_folder_structure(path.parent)
         with open(path, "w") as fp:
             fp.write("date,last_activity\n")
     now = datetime.datetime.now()

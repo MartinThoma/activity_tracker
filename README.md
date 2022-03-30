@@ -17,6 +17,16 @@ $ cd ~/activity_tracker
 $ pip install -e .
 ```
 
+Some additional dependencies you might want to install:
+
+```bash
+# Dependencies of xprintidle
+sudo apt-get install python3-dev libx11-dev libxss-dev
+
+# System dependencies for the autostart option
+sudo apt-get install screen
+```
+
 
 ## Usage
 
